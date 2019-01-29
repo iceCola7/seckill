@@ -1,5 +1,7 @@
 package me.cxz.seckill.service.model;
 
+import org.joda.time.DateTime;
+
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -27,6 +29,16 @@ public class UserModel {
 
     @NotBlank(message = "密码不能为空")
     private String encryptPassword;
+
+    private DateTime createTime;
+
+    public DateTime getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(DateTime createTime) {
+        this.createTime = createTime;
+    }
 
     public Integer getId() {
         return id;

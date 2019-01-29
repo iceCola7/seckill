@@ -10,6 +10,7 @@ import me.cxz.seckill.service.UserService;
 import me.cxz.seckill.service.model.UserModel;
 import me.cxz.seckill.validator.ValidationResult;
 import me.cxz.seckill.validator.ValidatorImpl;
+import org.joda.time.DateTime;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -65,6 +66,7 @@ public class UserServiceImpl implements UserService {
             throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR, result.getErrorMsg());
         }
 
+        userModel.setCreateTime(new DateTime());
         // 实现 model -> dataobject 方法
         UserDO userDO = convertFromModel(userModel);
         try {
@@ -96,6 +98,7 @@ public class UserServiceImpl implements UserService {
         }
         UserDO userDO = new UserDO();
         BeanUtils.copyProperties(userModel, userDO);
+        userDO.setCreateTime(userModel.getCreateTime().toDate());
         return userDO;
     }
 
