@@ -1,8 +1,8 @@
 package me.cxz.seckill.service.impl;
-import me.cxz.seckill.dao.OrderDoMapper;
-import me.cxz.seckill.dao.SequenceDoMapper;
-import me.cxz.seckill.dataobject.OrderDo;
-import me.cxz.seckill.dataobject.SequenceDo;
+import me.cxz.seckill.dao.OrderDOMapper;
+import me.cxz.seckill.dao.SequenceDOMapper;
+import me.cxz.seckill.dataobject.OrderDO;
+import me.cxz.seckill.dataobject.SequenceDO;
 import me.cxz.seckill.error.BusinessException;
 import me.cxz.seckill.error.EmBusinessError;
 import me.cxz.seckill.service.ItemService;
@@ -31,10 +31,10 @@ public class OrderServiceImpl implements OrderService {
     private UserService userService;
 
     @Autowired
-    private OrderDoMapper orderDoMapper;
+    private OrderDOMapper orderDoMapper;
 
     @Autowired
-    private SequenceDoMapper sequenceDoMapper;
+    private SequenceDOMapper sequenceDoMapper;
 
     @Override
     @Transactional
@@ -85,7 +85,7 @@ public class OrderServiceImpl implements OrderService {
 
         // 生成订单号
         orderModel.setId(generateOrderNo());
-        OrderDo orderDo = this.convertFromOrderModel(orderModel);
+        OrderDO orderDo = this.convertFromOrderModel(orderModel);
         orderDoMapper.insertSelective(orderDo);
 
         // 加上商品的销量
@@ -108,7 +108,7 @@ public class OrderServiceImpl implements OrderService {
         // 中间6位为自增序列
         // 获取当前 sequence
         int sequence = 0;
-        SequenceDo sequenceDo = sequenceDoMapper.getSequenceByName("order_info");
+        SequenceDO sequenceDo = sequenceDoMapper.getSequenceByName("order_info");
         sequence = sequenceDo.getCurrentValue();
         sequenceDo.setCurrentValue(sequenceDo.getCurrentValue() + sequenceDo.getStep());
         sequenceDoMapper.updateByPrimaryKeySelective(sequenceDo);
@@ -125,11 +125,11 @@ public class OrderServiceImpl implements OrderService {
 
     }
 
-    private OrderDo convertFromOrderModel(OrderModel orderModel) {
+    private OrderDO convertFromOrderModel(OrderModel orderModel) {
         if (orderModel == null) {
             return null;
         }
-        OrderDo orderDo = new OrderDo();
+        OrderDO orderDo = new OrderDO();
         BeanUtils.copyProperties(orderModel, orderDo);
         orderDo.setItemPrice(orderModel.getItemPrice().doubleValue());
         orderDo.setOrderPrice(orderModel.getOrderPrice().doubleValue());

@@ -39,26 +39,26 @@
                <!--enableSelectByExample="false" selectByExampleQueryId="false">-->
         <!--</table>-->
 
-        <!--<table tableName="item" domainObjectName="ItemDo" enableCountByExample="false"-->
+        <!--<table tableName="item" domainObjectName="ItemDO" enableCountByExample="false"-->
                <!--enableUpdateByExample="false" enableDeleteByExample="false"-->
                <!--enableSelectByExample="false" selectByExampleQueryId="false">-->
         <!--</table>-->
-        <!--<table tableName="item_stock" domainObjectName="ItemStockDo" enableCountByExample="false"-->
-               <!--enableUpdateByExample="false" enableDeleteByExample="false"-->
-               <!--enableSelectByExample="false" selectByExampleQueryId="false">-->
-        <!--</table>-->
-
-        <!--<table tableName="order_info" domainObjectName="OrderDo" enableCountByExample="false"-->
+        <!--<table tableName="item_stock" domainObjectName="ItemStockDO" enableCountByExample="false"-->
                <!--enableUpdateByExample="false" enableDeleteByExample="false"-->
                <!--enableSelectByExample="false" selectByExampleQueryId="false">-->
         <!--</table>-->
 
-        <!--<table tableName="sequence_info" domainObjectName="SequenceDo" enableCountByExample="false"-->
+        <!--<table tableName="order_info" domainObjectName="OrderDO" enableCountByExample="false"-->
                <!--enableUpdateByExample="false" enableDeleteByExample="false"-->
                <!--enableSelectByExample="false" selectByExampleQueryId="false">-->
         <!--</table>-->
 
-        <table tableName="promo" domainObjectName="PromoDo" enableCountByExample="false"
+        <!--<table tableName="sequence_info" domainObjectName="SequenceDO" enableCountByExample="false"-->
+               <!--enableUpdateByExample="false" enableDeleteByExample="false"-->
+               <!--enableSelectByExample="false" selectByExampleQueryId="false">-->
+        <!--</table>-->
+
+        <table tableName="promo" domainObjectName="PromoDO" enableCountByExample="false"
                enableUpdateByExample="false" enableDeleteByExample="false"
                enableSelectByExample="false" selectByExampleQueryId="false">
         </table>

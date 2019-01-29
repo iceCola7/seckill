@@ -1,7 +1,7 @@
 package me.cxz.seckill.service.impl;
 
-import me.cxz.seckill.dao.PromoDoMapper;
-import me.cxz.seckill.dataobject.PromoDo;
+import me.cxz.seckill.dao.PromoDOMapper;
+import me.cxz.seckill.dataobject.PromoDO;
 import me.cxz.seckill.service.PromoService;
 import me.cxz.seckill.service.model.PromoModel;
 import org.joda.time.DateTime;
@@ -15,13 +15,13 @@ import java.math.BigDecimal;
 public class PromoServiceImpl implements PromoService {
 
     @Autowired
-    private PromoDoMapper promoDoMapper;
+    private PromoDOMapper promoDoMapper;
 
     @Override
     public PromoModel getPromoByItemId(Integer itemId) {
 
         // 获取对应商品的秒杀活动信息
-        PromoDo promoDo = promoDoMapper.selectByItemId(itemId);
+        PromoDO promoDo = promoDoMapper.selectByItemId(itemId);
 
         // dataobject->model
         PromoModel promoModel = this.convertFromDataObject(promoDo);
@@ -42,7 +42,7 @@ public class PromoServiceImpl implements PromoService {
         return promoModel;
     }
 
-    private PromoModel convertFromDataObject(PromoDo promoDo) {
+    private PromoModel convertFromDataObject(PromoDO promoDo) {
         if (promoDo == null) {
             return null;
         }

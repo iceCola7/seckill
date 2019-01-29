@@ -1,9 +1,9 @@
 package me.cxz.seckill.service.impl;
 
-import me.cxz.seckill.dao.ItemDoMapper;
-import me.cxz.seckill.dao.ItemStockDoMapper;
-import me.cxz.seckill.dataobject.ItemDo;
-import me.cxz.seckill.dataobject.ItemStockDo;
+import me.cxz.seckill.dao.ItemDOMapper;
+import me.cxz.seckill.dao.ItemStockDOMapper;
+import me.cxz.seckill.dataobject.ItemDO;
+import me.cxz.seckill.dataobject.ItemStockDO;
 import me.cxz.seckill.error.BusinessException;
 import me.cxz.seckill.error.EmBusinessError;
 import me.cxz.seckill.service.ItemService;
@@ -28,29 +28,29 @@ public class ItemServiceImpl implements ItemService {
     private ValidatorImpl validator;
 
     @Autowired
-    private ItemDoMapper itemDoMapper;
+    private ItemDOMapper itemDoMapper;
 
     @Autowired
-    private ItemStockDoMapper itemStockDoMapper;
+    private ItemStockDOMapper itemStockDoMapper;
 
     @Autowired
     private PromoService promoService;
 
-    private ItemDo convertItemDOFromItemModel(ItemModel itemModel) {
+    private ItemDO convertItemDOFromItemModel(ItemModel itemModel) {
         if (itemModel == null) {
             return null;
         }
-        ItemDo itemDo = new ItemDo();
+        ItemDO itemDo = new ItemDO();
         BeanUtils.copyProperties(itemModel, itemDo);
         itemDo.setPrice(itemModel.getPrice().doubleValue());
         return itemDo;
     }
 
-    private ItemStockDo convertItemStockDOFromItemModel(ItemModel itemModel) {
+    private ItemStockDO convertItemStockDOFromItemModel(ItemModel itemModel) {
         if (itemModel == null) {
             return null;
         }
-        ItemStockDo itemStockDo = new ItemStockDo();
+        ItemStockDO itemStockDo = new ItemStockDO();
         itemStockDo.setStock(itemModel.getStock());
         itemStockDo.setItemId(itemModel.getId());
         return itemStockDo;
@@ -67,14 +67,14 @@ public class ItemServiceImpl implements ItemService {
         }
 
         // 转化 itemmode->dataobject
-        ItemDo itemDo = convertItemDOFromItemModel(itemModel);
+        ItemDO itemDo = convertItemDOFromItemModel(itemModel);
 
         // 写入数据库
         itemDoMapper.insertSelective(itemDo);
 
         itemModel.setId(itemDo.getId());
 
-        ItemStockDo itemStockDo = convertItemStockDOFromItemModel(itemModel);
+        ItemStockDO itemStockDo = convertItemStockDOFromItemModel(itemModel);
         itemStockDoMapper.insertSelective(itemStockDo);
 
         // 返回创建完的对象
@@ -84,10 +84,10 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemModel> listItem() {
 
-        List<ItemDo> itemDoList = itemDoMapper.listItem();
+        List<ItemDO> itemDoList = itemDoMapper.listItem();
 
         List<ItemModel> itemModelList = itemDoList.stream().map(itemDo -> {
-            ItemStockDo itemStockDo = itemStockDoMapper.selectByItemId(itemDo.getId());
+            ItemStockDO itemStockDo = itemStockDoMapper.selectByItemId(itemDo.getId());
             ItemModel itemModel = this.convertModelFromDataObject(itemDo, itemStockDo);
             return itemModel;
         }).collect(Collectors.toList());
@@ -97,13 +97,13 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemModel getItemById(Integer id) {
 
-        ItemDo itemDo = itemDoMapper.selectByPrimaryKey(id);
+        ItemDO itemDo = itemDoMapper.selectByPrimaryKey(id);
         if (itemDo == null) {
             return null;
         }
 
         // 操作获得库存数量
-        ItemStockDo itemStockDo = itemStockDoMapper.selectByItemId(itemDo.getId());
+        ItemStockDO itemStockDo = itemStockDoMapper.selectByItemId(itemDo.getId());
 
         // 将 dataobject->model
         ItemModel itemModel = this.convertModelFromDataObject(itemDo, itemStockDo);
@@ -136,7 +136,7 @@ public class ItemServiceImpl implements ItemService {
         itemDoMapper.increaseSales(itemId, amount);
     }
 
-    private ItemModel convertModelFromDataObject(ItemDo itemDo, ItemStockDo itemStockDo) {
+    private ItemModel convertModelFromDataObject(ItemDO itemDo, ItemStockDO itemStockDo) {
         ItemModel itemModel = new ItemModel();
         BeanUtils.copyProperties(itemDo, itemModel);
         itemModel.setPrice(new BigDecimal(itemDo.getPrice()));
