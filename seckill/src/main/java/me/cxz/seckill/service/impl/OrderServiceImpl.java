@@ -22,6 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -37,6 +39,25 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private SequenceDOMapper sequenceDoMapper;
+
+    @Override
+    public List<OrderModel> listOrderByUserId(Integer userId) throws BusinessException {
+
+        // 1.校验用户信息是否合法
+        UserModel userModel = userService.getUserById(userId);
+        if (userModel == null) {
+            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR, "用户信息不存在");
+        }
+
+        List<OrderDO> orderDOList = orderDoMapper.listOrderByUserId(userId);
+
+        List<OrderModel> orderModelList = orderDOList.stream().map(orderDO -> {
+            OrderModel orderModel = this.convertFromOrderDO(orderDO);
+            return orderModel;
+        }).collect(Collectors.toList());
+
+        return orderModelList;
+    }
 
     @Override
     @Transactional
@@ -122,6 +143,7 @@ public class OrderServiceImpl implements OrderService {
         stringBuilder.append(sequenceStr);
 
         // 最后2位为分库分表位，暂时写死
+        // TODO
         stringBuilder.append("00");
 
         return String.valueOf(stringBuilder);
@@ -138,6 +160,18 @@ public class OrderServiceImpl implements OrderService {
         orderDo.setOrderPrice(orderModel.getOrderPrice().doubleValue());
         orderDo.setCreateTime(orderModel.getCreateTime().toDate());
         return orderDo;
+    }
+
+    private OrderModel convertFromOrderDO(OrderDO orderDO) {
+        if (orderDO == null) {
+            return null;
+        }
+        OrderModel orderModel = new OrderModel();
+        BeanUtils.copyProperties(orderDO, orderModel);
+        orderModel.setItemPrice(new BigDecimal(orderDO.getItemPrice()));
+        orderModel.setOrderPrice(new BigDecimal(orderDO.getOrderPrice()));
+        orderModel.setCreateTime(new DateTime(orderDO.getCreateTime()));
+        return orderModel;
     }
 
 }
