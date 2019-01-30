@@ -1,4 +1,5 @@
 package me.cxz.seckill.service.impl;
+
 import me.cxz.seckill.dao.OrderDOMapper;
 import me.cxz.seckill.dao.SequenceDOMapper;
 import me.cxz.seckill.dataobject.OrderDO;
@@ -11,6 +12,7 @@ import me.cxz.seckill.service.UserService;
 import me.cxz.seckill.service.model.ItemModel;
 import me.cxz.seckill.service.model.OrderModel;
 import me.cxz.seckill.service.model.UserModel;
+import org.joda.time.DateTime;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -75,6 +77,7 @@ public class OrderServiceImpl implements OrderService {
         orderModel.setItemId(itemId);
         orderModel.setUserId(userId);
         orderModel.setAmount(amount);
+        orderModel.setCreateTime(new DateTime());
         if (promoId != null) {
             orderModel.setItemPrice(itemModel.getPromoModel().getPromoItemPrice());
         } else {
@@ -133,6 +136,7 @@ public class OrderServiceImpl implements OrderService {
         BeanUtils.copyProperties(orderModel, orderDo);
         orderDo.setItemPrice(orderModel.getItemPrice().doubleValue());
         orderDo.setOrderPrice(orderModel.getOrderPrice().doubleValue());
+        orderDo.setCreateTime(orderModel.getCreateTime().toDate());
         return orderDo;
     }
 

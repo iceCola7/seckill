@@ -1,5 +1,7 @@
 package me.cxz.seckill.service.model;
 
+import org.joda.time.DateTime;
+
 import java.math.BigDecimal;
 
 /**
@@ -7,7 +9,7 @@ import java.math.BigDecimal;
  */
 public class OrderModel {
 
-    private String id ;
+    private String id;
 
     // 购买的用户 id
     private Integer userId;
@@ -26,6 +28,16 @@ public class OrderModel {
 
     // 购买的金额，若 promoId 非空，则表示秒杀商品价格
     private BigDecimal orderPrice;
+
+    private DateTime createTime;
+
+    public DateTime getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(DateTime createTime) {
+        this.createTime = createTime;
+    }
 
     public Integer getPromoId() {
         return promoId;
