@@ -41,6 +41,19 @@ public class OrderServiceImpl implements OrderService {
     private SequenceDOMapper sequenceDoMapper;
 
     @Override
+    public OrderModel getOrderById(String id) throws BusinessException {
+
+        OrderDO orderDO = orderDoMapper.selectByPrimaryKey(id);
+
+        if (orderDO == null) {
+            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR, "订单信息不存在");
+        }
+        OrderModel orderModel = this.convertFromOrderDO(orderDO);
+
+        return orderModel;
+    }
+
+    @Override
     public List<OrderModel> listOrderByUserId(Integer userId) throws BusinessException {
 
         // 1.校验用户信息是否合法

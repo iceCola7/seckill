@@ -14,4 +14,6 @@ public interface OrderService {
     // 订单列表数据
     List<OrderModel> listOrderByUserId(Integer userId) throws BusinessException;
 
+    OrderModel getOrderById(String id) throws BusinessException;
+
 }

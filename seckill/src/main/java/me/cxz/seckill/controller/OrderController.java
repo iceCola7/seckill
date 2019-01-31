@@ -35,23 +35,20 @@ public class OrderController extends BaseController {
                                         @RequestParam("amount") Integer amount,
                                         @RequestParam("promoId") Integer promoId) throws BusinessException {
 
-        Boolean isLogin = (Boolean) httpServletRequest.getSession().getAttribute("IS_LOGIN");
-        if (isLogin == null || !isLogin.booleanValue()) {
-            throw new BusinessException(EmBusinessError.USER_NOT_LOGIN, "用户还没有登录，不能下单");
-        }
-        // 获取用户的登录信息
-        UserModel userModel = (UserModel) httpServletRequest.getSession().getAttribute("LOGIN_USER");
+        UserModel userModel = validateLogin();
 
         OrderModel orderModel = orderService.createOrder(userModel.getId(), itemId, promoId, amount);
 
-        return CommonReturnType.create(null);
+        return CommonReturnType.create(orderModel);
     }
 
     @RequestMapping(value = "/list", method = {RequestMethod.GET})
     @ResponseBody
-    public CommonReturnType listOrderByUserId(@RequestParam("userId") Integer userId) throws BusinessException {
+    public CommonReturnType listOrderByUserId() throws BusinessException {
 
-        List<OrderModel> orderModelList = orderService.listOrderByUserId(userId);
+        UserModel userModel = validateLogin();
+
+        List<OrderModel> orderModelList = orderService.listOrderByUserId(userModel.getId());
 
         List<OrderVO> orderVOList = orderModelList.stream().map(orderModel -> {
             OrderVO orderVO = convertFromModel(orderModel);
@@ -59,6 +56,34 @@ public class OrderController extends BaseController {
         }).collect(Collectors.toList());
 
         return CommonReturnType.create(orderVOList);
+    }
+
+    @RequestMapping(value = "/get", method = {RequestMethod.GET})
+    @ResponseBody
+    public CommonReturnType getOrder(@RequestParam("id") String id) throws BusinessException {
+
+        validateLogin();
+
+        OrderModel orderModel = orderService.getOrderById(id);
+        OrderVO orderVO = this.convertFromModel(orderModel);
+
+        return CommonReturnType.create(orderVO);
+    }
+
+    /**
+     * 验证是否已经登录
+     *
+     * @return 返回用户对象
+     * @throws BusinessException 没有登录抛异常
+     */
+    private UserModel validateLogin() throws BusinessException {
+        Boolean isLogin = (Boolean) httpServletRequest.getSession().getAttribute("IS_LOGIN");
+        if (isLogin == null || !isLogin.booleanValue()) {
+            throw new BusinessException(EmBusinessError.USER_NOT_LOGIN);
+        }
+        // 获取用户的登录信息
+        UserModel userModel = (UserModel) httpServletRequest.getSession().getAttribute("LOGIN_USER");
+        return userModel;
     }
 
     private OrderVO convertFromModel(OrderModel orderModel) {
